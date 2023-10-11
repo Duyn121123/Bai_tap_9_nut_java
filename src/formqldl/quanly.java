@@ -253,7 +253,7 @@ public class quanly extends javax.swing.JFrame {
      // int currentRecordIndex = 0;
     public Connection con = null;
     public ResultSet rs;
-    public Byte Chucnang=0;
+    public int Chucnang=0;
     public void Hienthi() throws SQLException{
         try{
             Masv.setText(rs.getString("Masv"));
@@ -261,7 +261,9 @@ public class quanly extends javax.swing.JFrame {
             Ngaysinh.setText(rs.getString("Ngaysinh"));
             Gioitinh.setText(rs.getString("Gioitinh"));
             Malop.setText(rs.getString("Malop"));
-            
+            Update.setEnabled(false);
+            Cancel.setEnabled(false);
+
         }catch(Exception e){
             System.err.println("co loi"+e.getMessage());
         }
@@ -332,12 +334,7 @@ public class quanly extends javax.swing.JFrame {
     }//GEN-LAST:event_LastActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        // TODO add your handling code here:
-        
- 
-
-              
-              // int currentRecordIndex = 0;
+      
         try{
             String username ="sa";
             String password="123456789";
@@ -346,10 +343,6 @@ public class quanly extends javax.swing.JFrame {
         con = java.sql.DriverManager.getConnection(url, username, password);
         System.out.println("Da ket noi");
 
-//       Statement st = null;
-//        ResultSet rs = null;
-
-       
             java.sql.Statement st= con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             String sqlString = "Select *From Sinhvien";
             rs = st.executeQuery(sqlString);
@@ -363,9 +356,7 @@ public class quanly extends javax.swing.JFrame {
                 Gioitinh.setText("");
                Malop.setText("");
             }}
-//         catch (SQLException e) {
-//            e.printStackTrace();
-       
+//      
           catch (ClassNotFoundException | SQLException e) {
            e.printStackTrace();
         }
@@ -373,10 +364,7 @@ public class quanly extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
  
     private void AddNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewActionPerformed
-        // Hiển thị thông báo thêm mới thành công nếu cần
-      
-        // Sau khi thêm mới, bạn có thể làm sạch các trường để nhập dữ liệu mới
-        
+     
         Masv.setText("");
         Hoten.setText("");
         Ngaysinh.setText("");
@@ -402,10 +390,7 @@ public class quanly extends javax.swing.JFrame {
         String ngaysinh = Ngaysinh.getText();
         String gioitinh = Gioitinh.getText();
         String malop = Malop.getText();
-        // Hiển thị thông báo thêm mới thành công nếu cần
-        // JOptionPane.showMessageDialog(this, "Thêm mới thành công!");
-        
-        
+     
         Masv.setEnabled(true);
         Hoten.setEnabled(true);
         Ngaysinh.setEnabled(true);
@@ -421,49 +406,35 @@ public class quanly extends javax.swing.JFrame {
     private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
 
 try {
-               String masv = Masv.getText();
-            String hoten = Hoten.getText();
-            String ngaysinh = Ngaysinh.getText();
-            String gioitinh = Gioitinh.getText();
-            String malop = Malop.getText();
-
-           // java.sql.Statement st=con.createStatement();
-          //  String sqlString="";
+     
+            java.sql.Statement st=con.createStatement();
+            String sqlString="";
                if (Chucnang == 1)  {
-           String sqlString = "INSERT INTO Sinhvien(Masv, Hoten, Ngaysinh, Gioitinh, Malop) VALUES (?,?,?,?,?)";
-                           PreparedStatement pst = con.prepareStatement(sqlString);
-                pst.setString(1, masv);
-                pst.setString(2, hoten);
-                pst.setString(3, ngaysinh);
-                pst.setString(4, gioitinh);
-                pst.setString(5, malop);
-                pst.executeUpdate();
-                    pst.executeUpdate();
-               }else if (Chucnang == 2) {
-            String sqlString = "UPDATE Sinhvien SET Hoten=?, Ngaysinh=?, Gioitinh=?, Malop=? Where Masv=?";
-                           PreparedStatement pst = con.prepareStatement(sqlString);
-                pst.setString(1, hoten);
-                pst.setString(2, ngaysinh);
-                pst.setString(3, gioitinh);
-                pst.setString(4, malop);
-                pst.setString(5, masv);
-                pst.executeUpdate();
+            sqlString = "INSERT INTO Sinhvien(Masv, Hoten, Ngaysinh, Gioitinh, Malop) VALUES ('"+Masv.getText()+"','"+Hoten.getText()+"','"+
+                   Ngaysinh.getText()+"','"+Gioitinh.getText()+"','"+Malop.getText()+"')";
+      
+                st.executeUpdate(sqlString);
+               Update.setEnabled(false);
+               Cancel.setEnabled(false);
+
+               }
+               if (Chucnang == 2) {
+             sqlString = "UPDATE Sinhvien SET Hoten='"+Hoten.getText()+"', Ngaysinh='"+Ngaysinh.getText()+"',Gioitinh='"+Gioitinh.getText()+"',Malop='"+Malop.getText()+
+                     "' Where Masv='"+Masv.getText()+"'";
+
+                st.executeUpdate(sqlString);
           Update.setEnabled(false);
-        Cancel.setEnabled(false);
+           Cancel.setEnabled(false);
         AddNew.setEnabled(true);
         Edit.setEnabled(true);
               
-    }   //         rs = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM Sinhvien");
-           // rs.last();
+    }  
        JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
-       //Resetdata();
-       //Hienthi();
+     
 } catch (SQLException e) {
     e.printStackTrace();
     JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật dữ liệu!");
     
-    //Update.setEnabled(false);
-    // Handle any exceptions here
 }
 
     }//GEN-LAST:event_UpdateActionPerformed
@@ -473,13 +444,12 @@ try {
     }//GEN-LAST:event_MasvActionPerformed
 
     private void CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelActionPerformed
-        // TODO add your handling code here:
-       // System.exit(0);
-               Masv.setEnabled(false);
-        Hoten.setEnabled(false);
-        Ngaysinh.setEnabled(false);
-        Gioitinh.setEnabled(false);
-        Malop.setEnabled(false);
+     
+               Masv.setEnabled(true);
+        Hoten.setEnabled(true);
+        Ngaysinh.setEnabled(true);
+        Gioitinh.setEnabled(true);
+        Malop.setEnabled(true);
         AddNew.setEnabled(true);
         Edit.setEnabled(true);
         Update.setEnabled(false);
@@ -488,16 +458,15 @@ try {
     }//GEN-LAST:event_CancelActionPerformed
 
     private void PreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PreActionPerformed
-        // TODO add your handling code here:
-              
-    // TODO add your handling code here:
+     
     try {
             
             
             if (rs != null && rs.previous()) {
                 Hienthi();
                 Next.setEnabled(true);
-            } else if(rs.isFirst()){
+            } 
+            if(rs.isFirst()){
                     Pre.setEnabled(false);
                 
             }
@@ -510,15 +479,18 @@ try {
     }//GEN-LAST:event_PreActionPerformed
 
     private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
-        // TODO add your handling code here:
+
           try {
             Pre.setEnabled(true);
             
             if (rs != null && rs.next()) {
                 Hienthi();
                 Pre.setEnabled(true);
-            } else if(rs.isLast()){
+            } 
+            if(rs.isLast()){
                 Next.setEnabled(false);
+              
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
